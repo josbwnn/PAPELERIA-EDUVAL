@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Papelería Eduval</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Navbar discreto -->
+    <div class="navbar">
+        <a href="{{ url_for('home') }}" class="nav-btn">INICIO</a>
+        <a href="{{ url_for('catalogo') }}" class="nav-btn">CATÁLOGO</a>
+    </div>
+
+    <!-- Formulario de login -->
+    <div class="form-container">
+        <h2 class="form-title">INICIAR SESIÓN</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            <div class="form-group">
+                <label for="nombre_usuario">USUARIO</label>
+                <input type="text" id="nombre_usuario" name="nombre_usuario" required>
+            </div>
+
+            <div class="form-group">
+                <label for="contraseña">CONTRASEÑA</label>
+                <input type="password" id="contraseña" name="contraseña" required>
+            </div>
+
+            <button type="submit" class="btn-primary">INGRESAR</button>
+        </form>
+
+        <div class="form-footer">
+            ¿No tienes cuenta? <a href="{{ url_for('registro') }}">Regístrate aquí</a>
+        </div>
+    </div>
+</body>
+</html>

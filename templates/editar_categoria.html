@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Categoría - Papelería Eduval{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2 class="form-title">EDITAR CATEGORÍA</h2>
+
+    <form method="POST">
+        <div class="form-group">
+            <label for="nombre">NOMBRE DE LA CATEGORÍA</label>
+            <input type="text" id="nombre" name="nombre" value="{{ categoria.nombre }}" required autofocus>
+        </div>
+
+        <button type="submit" class="btn-primary">GUARDAR CAMBIOS</button>
+    </form>
+
+    <div class="form-footer">
+        <a href="{{ url_for('categorias') }}">← Volver a categorías</a>
+    </div>
+</div>
+{% endblock %}

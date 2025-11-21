@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Categorías - Papelería Eduval{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="table-container">
+        <div class="table-header">
+            <h2 class="table-title">GESTIÓN DE CATEGORÍAS</h2>
+            <a href="{{ url_for('agregar_categoria') }}" class="btn-secondary">+ AGREGAR CATEGORÍA</a>
+        </div>
+
+        {% if categorias %}
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        <a href="{{ url_for('categorias', orden='id') }}" 
+                           class="header-sort {% if request.args.get('orden') == 'id' %}active{% endif %}"
+                           title="Ordenar por ID">
+                            ID {% if request.args.get('orden') == 'id' %}▼{% else %}⇅{% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="{{ url_for('categorias', orden='nombre') }}" 
+                           class="header-sort {% if request.args.get('orden') == 'nombre' or not request.args.get('orden') %}active{% endif %}"
+                           title="Ordenar por Nombre">
+                            NOMBRE {% if request.args.get('orden') == 'nombre' or not request.args.get('orden') %}▼{% else %}⇅{% endif %}
+                        </a>
+                    </th>
+                    <th>ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for categoria in categorias %}
+                <tr>
+                    <td>{{ categoria.id }}</td>
+                    <td>{{ categoria.nombre }}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <a href="{{ url_for('editar_categoria', id=categoria.id) }}" class="btn-small btn-edit">EDITAR</a>
+                            <form method="POST" action="{{ url_for('eliminar_categoria', id=categoria.id) }}" style="display: inline;">
+                                <button type="submit" class="btn-small btn-delete" onclick="return confirm('¿Estás seguro de eliminar esta categoría?')">
+                                    ELIMINAR
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="text-align: center; padding: 40px; color: #666;">No hay categorías registradas</p>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.header-sort {
+    color: #6B7280;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.header-sort:hover {
+    color: #2563EB;
+}
+
+.header-sort.active {
+    color: #2563EB;
+    font-weight: 700;
+}
+
+thead th {
+    background-color: #F9FAFB;
+    border-bottom: 2px solid #E5E7EB;
+}
+</style>
+{% endblock %}

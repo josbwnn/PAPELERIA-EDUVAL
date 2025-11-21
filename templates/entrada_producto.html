@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrada de Producto - Papelería Eduval</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Navbar interno -->
+    <nav class="navbar-internal">
+        <a href="{{ url_for('home') }}">
+            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Papelería Eduval" class="logo-small">
+        </a>
+        <div class="nav-links">
+            <a href="{{ url_for('dashboard') }}">DASHBOARD</a>
+            <a href="{{ url_for('productos') }}">PRODUCTOS</a>
+            <a href="{{ url_for('logout') }}">CERRAR SESIÓN</a>
+        </div>
+    </nav>
+
+    <!-- Formulario -->
+    <div class="form-container">
+        <h2 class="form-title">REGISTRAR ENTRADA DE STOCK</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div style="background-color: #e3f2fd; padding: 20px; margin-bottom: 25px; border-left: 4px solid #2196f3;">
+            <h3 style="color: #1565c0; margin-bottom: 10px; font-size: 16px;">PRODUCTO SELECCIONADO</h3>
+            <p style="color: #555; font-size: 14px; margin-bottom: 5px;"><strong>Nombre:</strong> {{ producto.nombre }}</p>
+            <p style="color: #555; font-size: 14px; margin-bottom: 5px;"><strong>Stock actual:</strong> {{ producto.stock }} unidades</p>
+            <p style="color: #555; font-size: 14px;"><strong>Precio:</strong> ${{ "%.2f"|format(producto.precio) }}</p>
+        </div>
+
+        <form method="POST">
+            <div class="form-group">
+                <label for="cantidad">CANTIDAD A AGREGAR</label>
+                <input type="number" id="cantidad" name="cantidad" min="1" required autofocus>
+            </div>
+
+            <button type="submit" class="btn-primary">REGISTRAR ENTRADA</button>
+        </form>
+
+        <div class="form-footer">
+            <a href="{{ url_for('productos') }}">← Volver a productos</a>
+        </div>
+    </div>
+</body>
+</html>

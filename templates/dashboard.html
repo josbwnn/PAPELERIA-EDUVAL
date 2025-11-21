@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Papelería Eduval{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Bienvenida -->
+    <div class="welcome-section">
+        <h1 class="dashboard-title">BIENVENIDO, {{ session.nombre_usuario|upper }}</h1>
+        <p style="text-align: center; color: #666; font-size: 14px; margin-bottom: 40px;">
+            Rol: <strong>{{ session.rol|capitalize }}</strong>
+        </p>
+    </div>
+
+    <!-- Estadísticas generales -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number">{{ total_productos }}</div>
+            <div class="stat-label">Total Productos</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ total_categorias }}</div>
+            <div class="stat-label">Categorías</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ total_usuarios }}</div>
+            <div class="stat-label">Usuarios</div>
+            <a href="{{ url_for('usuarios') }}" style="display: block; margin-top: 10px; color: #2563EB; font-size: 12px; text-decoration: none;">Ver usuarios →</a>
+        </div>
+        <div class="stat-card" style="border-left-color: #d32f2f;">
+            <div class="stat-number" style="color: #d32f2f;">{{ productos_bajos|length }}</div>
+            <div class="stat-label">Stock Bajo</div>
+        </div>
+    </div>
+
+    <!-- Menú de acciones rápidas -->
+    <div class="quick-actions-section">
+        <h2 class="section-title">ACCIONES RÁPIDAS</h2>
+        <div class="quick-actions-grid">
+            
+            <!-- Ver Catálogo -->
+            <a href="{{ url_for('catalogo') }}" class="action-card">
+                <div class="action-icon"></div>
+                <h3>VER CATÁLOGO</h3>
+            </a>
+
+            <!-- Gestionar Productos -->
+            <a href="{{ url_for('productos') }}" class="action-card">
+                <div class="action-icon"></div>
+                <h3>PRODUCTOS</h3>
+            </a>
+
+            {% if session.rol == 'administrador' %}
+            <!-- Agregar Producto -->
+            <a href="{{ url_for('agregar_producto') }}" class="action-card">
+                <div class="action-icon"></div>
+                <h3>AGREGAR PRODUCTO</h3>
+            </a>
+
+            <!-- Categorías -->
+            <a href="{{ url_for('categorias') }}" class="action-card">
+                <div class="action-icon"></div>
+                <h3>CATEGORÍAS</h3>
+            </a>
+
+            <!-- Agregar Categoría -->
+            <a href="{{ url_for('agregar_categoria') }}" class="action-card">
+                <div class="action-icon"></div>
+                <h3>NUEVA CATEGORÍA</h3>
+            </a>
+
+            <!-- Gestión de Usuarios -->
+            <a href="{{ url_for('usuarios') }}" class="action-card">
+                <div class="action-icon"></div>
+                <h3>USUARIOS</h3>
+            </a>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- Productos con stock bajo -->
+    {% if productos_bajos %}
+    <div class="table-container" style="margin-top: 40px;">
+        <div class="table-header">
+            <h2 class="table-title"> PRODUCTOS CON STOCK BAJO</h2>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>NOMBRE</th>
+                    <th>STOCK ACTUAL</th>
+                    <th>STOCK MÍNIMO</th>
+                    <th>CATEGORÍA</th>
+                    <th>ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in productos_bajos %}
+                <tr>
+                    <td>{{ producto.id }}</td>
+                    <td>{{ producto.nombre }}</td>
+                    <td style="color: #d32f2f; font-weight: 600;">{{ producto.stock }}</td>
+                    <td>{{ producto.stock_minimo }}</td>
+                    <td>{{ producto.categoria.nombre if producto.categoria else 'Sin categoría' }}</td>
+                    <td>
+                        <a href="{{ url_for('entrada_producto', id=producto.id) }}" class="btn-small btn-stock">
+                            REABASTECER
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div style="background-color: #e8f5e9; padding: 20px; margin-top: 40px; text-align: center; border-left: 4px solid #4caf50;">
+        <h3 style="color: #2e7d32; margin-bottom: 5px;">
+        <p style="color: #555; font-size: 14px;"> 
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

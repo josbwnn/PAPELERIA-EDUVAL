@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}Productos - Papelería Eduval{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="table-container">
+        <div class="table-header">
+            <h2 class="table-title">GESTIÓN DE PRODUCTOS</h2>
+            {% if session.rol == 'administrador' %}
+            <a href="{{ url_for('agregar_producto') }}" class="btn-secondary">+ AGREGAR PRODUCTO</a>
+            {% endif %}
+        </div>
+
+        {% if productos %}
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>
+                        <a href="{{ url_for('productos', orden='nombre') }}" 
+                           class="header-sort {% if request.args.get('orden') == 'nombre' %}active{% endif %}"
+                           title="Ordenar por Nombre">
+                            NOMBRE {% if request.args.get('orden') == 'nombre' %}▼{% else %}⇅{% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="{{ url_for('productos', orden='precio') }}" 
+                           class="header-sort {% if request.args.get('orden') == 'precio' %}active{% endif %}"
+                           title="Ordenar por Precio">
+                            PRECIO {% if request.args.get('orden') == 'precio' %}▼{% else %}⇅{% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="{{ url_for('productos', orden='stock') }}" 
+                           class="header-sort {% if request.args.get('orden') == 'stock' %}active{% endif %}"
+                           title="Ordenar por Stock">
+                            STOCK {% if request.args.get('orden') == 'stock' %}▼{% else %}⇅{% endif %}
+                        </a>
+                    </th>
+                    <th>STOCK MÍNIMO</th>
+                    <th>
+                        <a href="{{ url_for('productos', orden='categoria') }}" 
+                           class="header-sort {% if request.args.get('orden') == 'categoria' or not request.args.get('orden') %}active{% endif %}"
+                           title="Ordenar por Categoría">
+                            CATEGORÍA {% if request.args.get('orden') == 'categoria' or not request.args.get('orden') %}▼{% else %}⇅{% endif %}
+                        </a>
+                    </th>
+                    <th>ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in productos %}
+                <tr>
+                    <td>{{ producto.id }}</td>
+                    <td>{{ producto.nombre }}</td>
+                    <td>${{ "%.2f"|format(producto.precio) }}</td>
+                    <td {% if producto.stock < producto.stock_minimo %}style="color: #d32f2f; font-weight: 600;"{% endif %}>
+                        {{ producto.stock }}
+                    </td>
+                    <td>{{ producto.stock_minimo }}</td>
+                    <td>{{ producto.categoria.nombre if producto.categoria else 'Sin categoría' }}</td>
+                    <td>
+                        <div class="action-buttons">
+                            {% if session.rol == 'administrador' %}
+                            <a href="{{ url_for('editar_producto', id=producto.id) }}" class="btn-small btn-edit">EDITAR</a>
+                            <a href="{{ url_for('entrada_producto', id=producto.id) }}" class="btn-small btn-stock">ENTRADA</a>
+                            {% endif %}
+                            {% if session.rol in ['administrador', 'cajero'] %}
+                            <a href="{{ url_for('salida_producto', id=producto.id) }}" class="btn-small btn-stock">SALIDA</a>
+                            {% endif %}
+                            {% if session.rol == 'administrador' %}
+                            <form method="POST" action="{{ url_for('eliminar_producto', id=producto.id) }}" style="display: inline;">
+                                <button type="submit" class="btn-small btn-delete" onclick="return confirm('¿Estás seguro de eliminar este producto?')">
+                                    ELIMINAR
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="text-align: center; padding: 40px; color: #666;">No hay productos registrados</p>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.header-sort {
+    color: #6B7280;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.header-sort:hover {
+    color: #2563EB;
+}
+
+.header-sort.active {
+    color: #2563EB;
+    font-weight: 700;
+}
+
+thead th {
+    background-color: #F9FAFB;
+    border-bottom: 2px solid #E5E7EB;
+}
+</style>
+{% endblock %}

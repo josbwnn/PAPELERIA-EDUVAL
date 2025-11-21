@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Agregar Categoría - Papelería Eduval{% endblock %}
+
+{% block content %}
+<div class="container-sm" style="padding-top: 2rem;">
+    <div style="margin-bottom: 2rem;">
+        <a href="{{ url_for('categorias') }}" 
+           style="color: var(--color-texto-secundario); text-decoration: none; font-size: 0.9rem; font-weight: 500;">
+            ← Volver a Categorías
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h1 class="card-title">Agregar Nueva Categoría</h1>
+            <p class="text-muted" style="margin: 0; font-size: 0.9rem;">Crea una categoría para organizar tus productos</p>
+        </div>
+        
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('agregar_categoria') }}">
+                <div class="form-group">
+                    <label for="nombre">Nombre de la Categoría</label>
+                    <input 
+                        type="text" 
+                        id="nombre" 
+                        name="nombre" 
+                        placeholder="Ej: Cuadernos, Lápices, Mochilas..."
+                        required
+                        autofocus
+                    >
+                    <small class="text-muted" style="display: block; margin-top: 0.5rem; font-size: 0.85rem;">
+                        Usa un nombre descriptivo y único para la categoría
+                    </small>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">
+                        Crear Categoría
+                    </button>
+                    <a href="{{ url_for('categorias') }}" class="btn btn-secondary" style="flex: 1;">
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

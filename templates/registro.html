@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Registro - Papelería Eduval{% endblock %}
+
+{% block content %}
+<div class="container-sm" style="padding-top: 4rem;">
+    <div class="card">
+        <div class="card-header text-center">
+            <h1 class="card-title" style="margin-bottom: 0.5rem;">PAPELERÍA EDUVAL</h1>
+            <p class="text-muted" style="margin: 0; font-size: 0.95rem;">Registro de Personal Autorizado</p>
+        </div>
+        
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('registro') }}">
+                <div class="form-group">
+                    <label for="nombre_usuario">Usuario</label>
+                    <input 
+                        type="text" 
+                        id="nombre_usuario" 
+                        name="nombre_usuario" 
+                        placeholder="Elige un nombre de usuario"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="contraseña">Contraseña</label>
+                    <input 
+                        type="password" 
+                        id="contraseña" 
+                        name="contraseña" 
+                        placeholder="Crea una contraseña segura"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="rol">Rol</label>
+                    <select id="rol" name="rol" required>
+                        <option value="empleado">Empleado</option>
+                        <option value="cajero">Cajero</option>
+                        <option value="administrador">Administrador</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="clave_registro">Clave de Registro</label>
+                    <input 
+                        type="password" 
+                        id="clave_registro" 
+                        name="clave_registro" 
+                        placeholder="Ingresa la clave de registro del sistema"
+                        required
+                    >
+                    <small class="text-muted" style="display: block; margin-top: 0.5rem; font-size: 0.85rem;">
+                        Solo personal autorizado puede crear usuarios
+                    </small>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">
+                    Registrar Usuario
+                </button>
+            </form>
+
+            <div style="margin-top: 1.5rem; text-align: center; padding-top: 1.5rem; border-top: 1px solid var(--color-borde);">
+                <p class="text-muted" style="font-size: 0.9rem; margin: 0;">
+                    ¿Ya tienes cuenta? 
+                    <a href="{{ url_for('login') }}" style="color: var(--color-principal); font-weight: 500; text-decoration: none;">
+                        Iniciar sesión
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

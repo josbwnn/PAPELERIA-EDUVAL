@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %}Usuarios - Papelería Eduval{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="table-container">
+        <div class="table-header">
+            <h2 class="table-title">GESTIÓN DE USUARIOS</h2>
+            <a href="{{ url_for('registro') }}" class="btn-secondary">+ AGREGAR USUARIO</a>
+        </div>
+
+        {% if usuarios %}
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        <a href="{{ url_for('usuarios', orden='id') }}" 
+                           class="header-sort {% if request.args.get('orden') == 'id' %}active{% endif %}"
+                           title="Ordenar por ID">
+                            ID {% if request.args.get('orden') == 'id' %}▼{% else %}⇅{% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="{{ url_for('usuarios', orden='nombre') }}" 
+                           class="header-sort {% if request.args.get('orden') == 'nombre' %}active{% endif %}"
+                           title="Ordenar por Nombre">
+                            NOMBRE DE USUARIO {% if request.args.get('orden') == 'nombre' %}▼{% else %}⇅{% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="{{ url_for('usuarios', orden='jerarquia') }}" 
+                           class="header-sort {% if request.args.get('orden') == 'jerarquia' or not request.args.get('orden') %}active{% endif %}"
+                           title="Ordenar por Jerarquía">
+                            ROL {% if request.args.get('orden') == 'jerarquia' or not request.args.get('orden') %}▼{% else %}⇅{% endif %}
+                        </a>
+                    </th>
+                    <th>ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                <tr {% if usuario.id == session.user_id %}style="background-color: #EFF6FF;"{% endif %}>
+                    <td>{{ usuario.id }}</td>
+                    <td>
+                        {{ usuario.nombre_usuario }}
+                        {% if usuario.id == session.user_id %}
+                        <span style="color: #2563EB; font-size: 11px; font-weight: 600; margin-left: 8px;">(TÚ)</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="rol-badge rol-{{ usuario.rol }}">
+                            {{ usuario.rol|capitalize }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <!-- Formulario para cambiar rol -->
+                            {% if usuario.id != session.user_id %}
+                            <form method="POST" action="{{ url_for('cambiar_rol', id=usuario.id) }}" style="display: inline-block;">
+                                <select name="rol" class="rol-select" onchange="this.form.submit()">
+                                    <option value="administrador" {% if usuario.rol == 'administrador' %}selected{% endif %}>Administrador</option>
+                                    <option value="empleado" {% if usuario.rol == 'empleado' %}selected{% endif %}>Empleado</option>
+                                    <option value="cajero" {% if usuario.rol == 'cajero' %}selected{% endif %}>Cajero</option>
+                                </select>
+                            </form>
+                            {% endif %}
+
+                            <!-- Botón eliminar (no se puede eliminar a sí mismo) -->
+                            {% if usuario.id != session.user_id %}
+                            <form method="POST" action="{{ url_for('eliminar_usuario', id=usuario.id) }}" style="display: inline;">
+                                <button type="submit" class="btn-small btn-delete" onclick="return confirm('¿Estás seguro de eliminar al usuario {{ usuario.nombre_usuario }}?')">
+                                    ELIMINAR
+                                </button>
+                            </form>
+                            {% else %}
+                            <button class="btn-small" style="background-color: #9CA3AF; cursor: not-allowed;" disabled>
+                                ELIMINAR
+                            </button>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="text-align: center; padding: 40px; color: #666;">No hay usuarios registrados</p>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.header-sort {
+    color: #6B7280;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.header-sort:hover {
+    color: #2563EB;
+}
+
+.header-sort.active {
+    color: #2563EB;
+    font-weight: 700;
+}
+
+thead th {
+    background-color: #F9FAFB;
+    border-bottom: 2px solid #E5E7EB;
+}
+
+.rol-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.rol-administrador {
+    background-color: #DBEAFE;
+    color: #1E40AF;
+}
+
+.rol-empleado {
+    background-color: #D1FAE5;
+    color: #065F46;
+}
+
+.rol-cajero {
+    background-color: #FEF3C7;
+    color: #92400E;
+}
+
+.rol-select {
+    padding: 6px 10px;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    background-color: white;
+    transition: border-color 0.2s;
+}
+
+.rol-select:hover {
+    border-color: #2563EB;
+}
+
+.rol-select:focus {
+    outline: none;
+    border-color: #2563EB;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+</style>
+{% endblock %}

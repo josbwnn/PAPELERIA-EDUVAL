@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Papelería Eduval{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% block navbar %}
+    <!-- Navbar por defecto (puede ser sobrescrito) -->
+    {% if session.user_id %}
+    <nav class="navbar-internal">
+        <a href="{{ url_for('home') }}">
+            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Papelería Eduval" class="logo-small">
+        </a>
+        <div class="nav-links">
+            <span style="margin-right: 15px; font-size: 13px; font-weight: 600;">{{ session.nombre_usuario }}</span>
+            <a href="{{ url_for('home') }}">INICIO</a>
+            <a href="{{ url_for('catalogo') }}">CATÁLOGO</a>
+            {% if session.rol == 'administrador' %}
+            <a href="{{ url_for('dashboard') }}">DASHBOARD</a>
+            <a href="{{ url_for('productos') }}">PRODUCTOS</a>
+            <a href="{{ url_for('categorias') }}">CATEGORÍAS</a>
+            <a href="{{ url_for('usuarios') }}">USUARIOS</a>
+            {% elif session.rol in ['empleado', 'cajero'] %}
+            <a href="{{ url_for('productos') }}">PRODUCTOS</a>
+            {% endif %}
+            <a href="{{ url_for('logout') }}">CERRAR SESIÓN</a>
+        </div>
+    </nav>
+    {% else %}
+    <!-- Navbar para público (sin login visible) -->
+    <nav class="navbar-internal">
+        <a href="{{ url_for('home') }}">
+            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Papelería Eduval" class="logo-small">
+        </a>
+        <div class="nav-links">
+            <a href="{{ url_for('home') }}">INICIO</a>
+            <a href="{{ url_for('catalogo') }}">CATÁLOGO</a>
+        </div>
+    </nav>
+    {% endif %}
+    {% endblock %}
+
+    <!-- Mensajes Flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div style="max-width: 1200px; margin: 20px auto; padding: 0 20px;">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Contenido principal -->
+    {% block content %}{% endblock %}
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
